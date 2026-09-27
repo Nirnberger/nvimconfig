@@ -28,4 +28,21 @@ vim.opt.termguicolors = true
 vim.opt.spelllang = { "en_us" } --, "de_de" }
 vim.opt.spell = false
 
+-- Make the current position easier to track
+vim.opt.cursorline = true
+vim.opt.cursorlineopt = "both"
+vim.opt.scrolloff = 8
+vim.opt.sidescrolloff = 8
+
+-- ueep unfolded when starting
+vim.opt.foldlevelstart = 99
+
+
 vim.opt.mousescroll = 'ver:3,hor:6'
+
+vim.opt.guicursor = {
+  "n-v-c:block-Cursor",
+  "i-ci-ve:ver25-InsertCursor",
+  "r-cr:hor20-Cursor",
+  "o:hor50-Cursor",
+}

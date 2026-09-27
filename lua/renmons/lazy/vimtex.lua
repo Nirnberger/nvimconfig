@@ -11,8 +11,5 @@ return {
 
     -- set default viewer
     vim.g.vimtex_view_method = "skim"
-
-    -- ueep unfolded when starting
-    vim.opt.foldlevelstart = 99
   end,
 }

@@ -1,26 +1,4 @@
-local M = {}
-local onSave = vim.api.nvim_create_augroup("AutoFormatOnSave", { clear = true })
-
 local trim_group = vim.api.nvim_create_augroup("TrimTrailingWhitespace", { clear = true })
-
-vim.api.nvim_create_autocmd("BufWritePre", {
-  group = onSave,
-  pattern = { "*.lua", "*.ts", "*.tsx", "*.py" },
-  desc = "Format file before save.",
-  callback = function(args)
-    local clients = vim.lsp.get_clients({ bufnr = args.buf })
-
-    if #clients == 0 then
-      return
-    end
-
-    vim.lsp.buf.format({
-      bufnr = args.buf,
-      async = false,
-      timeout_ms = 2000,
-    })
-  end,
-})
 
 vim.api.nvim_create_autocmd("BufWritePre", {
   group = trim_group,
@@ -82,13 +60,6 @@ vim.api.nvim_create_autocmd("ColorScheme", {
 local cursor_group = vim.api.nvim_create_augroup("CursorVisuals", {
   clear = true,
 })
-
--- Make the current position easier to track
-vim.opt.termguicolors = true
-vim.opt.cursorline = true
-vim.opt.cursorlineopt = "both"
-vim.opt.scrolloff = 8
-vim.opt.sidescrolloff = 8
 
 -- Different cursor shapes and colors for each mode
 vim.opt.guicursor = table.concat({
