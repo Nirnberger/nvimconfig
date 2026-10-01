@@ -37,12 +37,14 @@ vim.opt.sidescrolloff = 8
 -- ueep unfolded when starting
 vim.opt.foldlevelstart = 99
 
+vim.opt.showmode = false -- lualine already shows the mode
+vim.opt.laststatus = 3 -- global statusline, matches globalstatus = true
 
-vim.opt.mousescroll = 'ver:3,hor:6'
+vim.opt.mousescroll = "ver:3,hor:6"
 
 vim.opt.guicursor = {
-  "n-v-c:block-Cursor",
-  "i-ci-ve:ver25-InsertCursor",
-  "r-cr:hor20-Cursor",
-  "o:hor50-Cursor",
+	"n-v-c:block-Cursor",
+	"i-ci-ve:ver25-InsertCursor",
+	"r-cr:hor20-Cursor",
+	"o:hor50-Cursor",
 }

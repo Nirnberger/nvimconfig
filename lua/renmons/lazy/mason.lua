@@ -12,9 +12,6 @@ return {
 		opts = {
 			ensure_installed = {
 				"stylua",
-				"shfmt",
-				"ruff",
-				"prettierd",
 				"lua_ls",
 				"pyright",
 				"ts_ls",
@@ -30,7 +27,7 @@ return {
 		"WhoIsSethDaniel/mason-tool-installer.nvim",
 		dependencies = { "mason-org/mason.nvim" },
 		opts = {
-			ensure_installed = { "stylua", "shfmt" },
+			ensure_installed = { "stylua", "shfmt", "ruff", "prettierd" },
 			run_on_start = true,
 		},
 	},

@@ -9,6 +9,13 @@ return {
         require("conform").format({ async = true, lsp_format = "fallback" })
       end,
       desc = "Format file",
+      {
+        "<leader>uf",
+        function()
+          require("conform").format({ async = true, lsp_format = "fallback" })
+        end,
+        desc = "Format buffer",
+      },
     },
   },
   opts = {

@@ -49,17 +49,44 @@ map("n", "<leader>bn", "<cmd>bnext<CR>", { desc = "Next buffer" })
 map("n", "<leader>bp", "<cmd>bprevious<CR>", { desc = "Previous buffer" })
 
 -- Safer buffer delete: deletes buffer but tries not to destroy window layout
+-- Safer buffer delete: keeps window layout, skips special buffers, asks about unsaved changes
 map("n", "<leader>bd", function()
-	local current = vim.api.nvim_get_current_buf()
-	local listed = vim.fn.getbufinfo({ buflisted = 1 })
+	local buf = vim.api.nvim_get_current_buf()
 
-	if #listed > 1 then
-		vim.cmd("bprevious")
-	else
-		vim.cmd("enew")
+	-- nvim-tree, help, quickfix, ... are not file buffers
+	if not vim.bo[buf].buflisted or vim.bo[buf].buftype ~= "" then
+		vim.notify("Not a file buffer, nothing to delete", vim.log.levels.WARN)
+		return
 	end
 
-	vim.cmd("bdelete " .. current)
+	if vim.bo[buf].modified then
+		local choice = vim.fn.confirm(
+			"Save changes to " .. vim.fn.fnamemodify(vim.fn.bufname(buf), ":t") .. "?",
+			"&Yes\n&No\n&Cancel"
+		)
+		if choice == 1 then
+			vim.cmd.write()
+		elseif choice ~= 2 then
+			return -- Cancel or <Esc>
+		end
+	end
+
+	-- In every window showing this buffer, switch to another buffer first
+	for _, win in ipairs(vim.fn.win_findbuf(buf)) do
+		vim.api.nvim_win_call(win, function()
+			local alt = vim.fn.bufnr("#")
+			if alt ~= -1 and alt ~= buf and vim.fn.buflisted(alt) == 1 then
+				vim.cmd.buffer(alt)
+			else
+				vim.cmd("bprevious")
+				if vim.api.nvim_get_current_buf() == buf then
+					vim.cmd.enew() -- it was the last buffer
+				end
+			end
+		end)
+	end
+
+	pcall(vim.cmd, "bdelete! " .. buf)
 end, { desc = "Delete buffer" })
 
 -- Search highlight
@@ -266,3 +293,20 @@ vim.keymap.set({ "n", "x" }, "k", move_up, {
 	silent = true,
 	desc = "Move up visual line if wrap is on",
 })
+
+map("n", "<leader>ud", function()
+	if vim.diagnostic.config().virtual_lines then
+		-- back to short messages at the end of the line
+		vim.diagnostic.config({
+			virtual_lines = false,
+			virtual_text = { spacing = 4, source = "if_many", prefix = "●" },
+		})
+		vim.notify("Diagnostics: inline")
+	else
+		vim.diagnostic.config({
+			virtual_lines = { current_line = true },
+			virtual_text = false,
+		})
+		vim.notify("Diagnostics: lines below")
+	end
+end, { desc = "Toggle diagnostic display" })
